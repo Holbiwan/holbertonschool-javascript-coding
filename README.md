@@ -1,1 +1,1 @@
-# holbertonschool-javascript-coding
+README holbertonschool-javascript-coding
