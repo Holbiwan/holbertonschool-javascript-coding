@@ -7,7 +7,7 @@ const countStudents = (dataPath) => {
     }
 
     const fileContent = fs.readFileSync(dataPath, 'utf-8').trim();
-    const fileLines = fileContent.split('\n').filter(line => line.trim() !== '');
+    const fileLines = fileContent.split('\n').filter((line) => line.trim() !== '');
 
     const studentGroups = fileLines.reduce((groups, line) => {
       const [firstname, lastname, age, field] = line.split(',').map((item) => item.trim());
@@ -27,7 +27,6 @@ const countStudents = (dataPath) => {
     }
   } catch (error) {
     console.error(`Error: ${error.message}`);
-    // Ajoutez ici tout code de gestion d'erreur supplémentaire si nécessaire.
   }
 };
 
