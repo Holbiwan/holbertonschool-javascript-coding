@@ -2,19 +2,24 @@ const fs = require('fs');
 
 const countStudents = (dataPath) => {
   try {
-    if (!fs.existsSync(dataPath) || !fs.statSync(dataPath).isFile()) {
+    const data = fs.readFileSync(dataPath, 'utf-8').trim();
+    const lines = data.split('\n');
+
+    if (lines.length <= 1) {
       throw new Error('Cannot load the database');
     }
 
-    const fileContent = fs.readFileSync(dataPath, 'utf-8').trim();
-    const fileLines = fileContent.split('\n').filter(line => line.trim() !== '');
+    const [header, ...studentLines] = lines;
 
-    const studentGroups = fileLines.reduce((groups, line) => {
+    const studentGroups = studentLines.reduce((groups, line) => {
       const [firstname, lastname, age, field] = line.split(',').map((item) => item.trim());
-      const updatedGroups = { ...groups };
-      updatedGroups[field] = updatedGroups[field] || [];
-      updatedGroups[field].push({ firstname, lastname, age });
-      return updatedGroups;
+
+      if (field) {
+        groups[field] = groups[field] || [];
+        groups[field].push({ firstname, lastname, age });
+      }
+
+      return groups;
     }, {});
 
     const totalStudents = Object.values(studentGroups).flat().length;
@@ -26,7 +31,7 @@ const countStudents = (dataPath) => {
       console.log(`Number of students in ${field}: ${students.length}. List: ${studentNames}`);
     }
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    throw new Error('Cannot load the database');
   }
 };
 
