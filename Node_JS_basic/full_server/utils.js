@@ -8,17 +8,17 @@ async function readDatabase(filePath) {
       } else {
         const lines = data.trim().split('\n');
         const headers = lines[0].split(',');
-        const students = [];
+        const students = { CS: [], SWE: [] };
 
         for (let i = 1; i < lines.length; i += 1) {
           const values = lines[i].split(',');
-          const student = {};
 
+          const student = {};
           for (let j = 0; j < headers.length; j += 1) {
             student[headers[j]] = values[j];
           }
 
-          students.push(student);
+          students[student.field.toUpperCase()].push(student.firstname);
         }
 
         resolve(students);
