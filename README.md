@@ -1,4 +1,4 @@
-# Javascript-coding
+# Holberton School Javascript-coding
 
 This repo contains my projects based on ES6, JavaScript and Node JS
 
