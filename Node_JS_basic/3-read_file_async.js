@@ -1,33 +1,38 @@
 const fs = require('fs');
 
-const countStudents = (path) => new Promise((resolve, reject) => {
-  fs.readFile(path, 'utf-8', (err, data) => {
-    if (err) {
-      reject(new Error('Cannot load the database'));
-      return;
-    }
+const countStudents = (path) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf-8', (err, data) => {
+      if (err) {
+        reject(new Error('Cannot load the database'));
+        return;
+      }
 
-    const fileLines = data.trim().split('\n');
-    const [...studentLines] = fileLines;
+      const rows = data.trim().split('\n').filter((element) => element.length > 0);
 
-    const studentGroups = studentLines.reduce((acc, line) => {
-      const [firstname, lastname, age, field] = line.split(',').map((item) => item.trim());
-      const groups = { ...acc };
-      groups[field] = groups[field] || [];
-      groups[field].push({ firstname, lastname, age });
-      return groups;
-    }, {});
+      const fields = {};
+      rows.forEach((element) => {
+        const row = element.split(',');
+        if (row[3] in fields) {
+          fields[row[3]].push(row[0]);
+        } else {
+          fields[row[3]] = [row[0]];
+        }
+      });
 
-    const totalStudents = Object.values(studentGroups).flat().length;
+      const totalStudents = rows.length;
+      console.log(`Number of students: ${totalStudents}`);
 
-    console.log(`Number of students: ${totalStudents}`);
-    for (const [field, students] of Object.entries(studentGroups)) {
-      const studentNames = students.map((student) => student.firstname).join(', ');
-      console.log(`Number of students in ${field}: ${students.length}. List: ${studentNames}`);
-    }
+      for (const field in fields) {
+        if (field) {
+          const list = fields[field];
+          console.log(`Number of students in ${field}: ${list.length}. List: ${list.join(', ')}`);
+        }
+      }
 
-    resolve();
+      resolve();
+    });
   });
-});
+};
 
 module.exports = countStudents;
